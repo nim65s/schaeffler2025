@@ -1,0 +1,21 @@
+Hessian = [np.zeros([T * 3, T * 3]) for _ in range(2)]
+gradient = [np.zeros(T * 3) for _ in range(2)]
+Jacobian = [np.zeros([T * 2, T * 3]) for _ in range(2)]
+gap = [np.zeros(T * 2) for _ in range(2)]
+for k, cop in enumerate(cop_refs):
+    # For each direction forward(x) / sideway(y)
+    for d in range(2):
+        # Hessian of OCP
+        Hessian[d][3 * k : 3 * k + 3, 3 * k : 3 * k + 3] = Lcom + Lcop
+        # Minimum acceleration or minimum jerk?
+        if WITH_JERK and k > 0:
+            Hessian[d][3 * k - 3 : 3 * k, 3 * k : 3 * k + 3] = -Lcom
+            Hessian[d][3 * k : 3 * k + 3, 3 * k - 3 : 3 * k] = -Lcom
+        # Gradient of OCP
+        gradient[d][3 * k + 2] = -cop[d]
+
+        Jacobian[d][2 * k : 2 * k + 2, 3 * k : 3 * k + 3] = np.eye(3)[:2]
+        if k > 0:
+            Jacobian[d][2 * k : 2 * k + 2, 3 * k - 3 : 3 * k] = -Fy
+        else:
+            gap[d][:2] = [com0[d], 0]

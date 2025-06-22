@@ -1,0 +1,24 @@
+for k, t in enumerate(times):
+    # Pre-compute kinematics, jacobians, com etc
+    pin.computeAllTerms(model, data, q, np.zeros(NV))
+
+    # Right foot
+    edot_right = right_refs[k] - data.oMf[feetIndexes["right"]].translation[:2]
+    edot_right = np.r_[edot_right, [0, 0, 0, 0]]  # Make it 6D
+    J_right = pin.getFrameJacobian(model, data, feetIndexes["right"], pin.LOCAL)
+    # Left foot
+    edot_left = left_refs[k] - data.oMf[feetIndexes["left"]].translation[:2]
+    J_left = pin.getFrameJacobian(model, data, feetIndexes["left"], pin.LOCAL)
+    edot_left = np.r_[edot_left, [0, 0, 0, 0]]  # Make it 6D
+    # COM
+    com_ref = np.r_[qp[0].results.x[k * 3], qp[1].results.x[k * 3]]
+    edot_com = com_ref - data.com[0][:2]
+    J_com = pin.jacobianCenterOfMass(model, data, q)[:2]
+
+    edot = 5 * np.r_[edot_right, edot_left, edot_com]
+    J = np.r_[J_right, J_left, J_com]
+
+    vq = pinv(J) @ edot
+    q = pin.integrate(model, q, vq * DT)
+    viz.display(q)
+    time.sleep(DT)

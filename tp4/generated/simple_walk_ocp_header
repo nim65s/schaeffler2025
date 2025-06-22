@@ -1,0 +1,3 @@
+T = len(times)
+WEIGHT_LEAST_MOTION = 5e-3  # best jerk
+WITH_JERK = False

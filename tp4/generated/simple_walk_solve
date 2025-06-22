@@ -1,0 +1,5 @@
+qp = [proxsuite.proxqp.dense.QP(T * 3, T * 2, 0, False) for d in range(2)]
+for d in range(2):
+    qp[d].settings.eps_abs = 1e-12
+    qp[d].init(Hessian[d], gradient[d], Jacobian[d], gap[d])
+    qp[d].solve()

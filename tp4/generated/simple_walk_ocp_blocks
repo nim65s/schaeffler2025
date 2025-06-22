@@ -1,0 +1,7 @@
+w2 = omega2
+w4 = w2**2
+Lcom = WEIGHT_LEAST_MOTION * np.array([[w4, 0, -w4], [0, 0, 0], [-w4, 0, w4]])
+Lcop = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 1]])
+Fy = np.array([[1, DT, 0], [w2 * DT, 1, -w2 * DT]])
+# Implicit integration in option:
+# Fy += np.array([ [w2*DT**2,0,-w2*DT**2].[0,0,0] ])

@@ -1,0 +1,7 @@
+q = robot.q0.copy()
+pin.computeAllTerms(model, data, q, np.zeros(NV))
+pin.framesForwardKinematics(model, data, q)
+com0 = data.com[0].copy()[:2]
+right0 = data.oMf[feetIndexes["right"]].translation.copy()[:2]
+left0 = data.oMf[feetIndexes["left"]].translation.copy()[:2]
+omega2 = -model.gravity.linear[2] / data.com[0][2]

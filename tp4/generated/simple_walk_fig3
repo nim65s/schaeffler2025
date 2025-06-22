@@ -1,0 +1,7 @@
+plt.figure(4)
+plt.plot(qp[0].results.x[::3], qp[1].results.x[::3])
+plt.plot(qp[0].results.x[2::3], qp[1].results.x[2::3], "r")
+plt.plot([c[0] for c in cop_refs], [c[1] for c in cop_refs], "r--")
+plt.legend(["COM", "COP", "COP ref"])
+plt.xlabel("forward (x)")
+plt.ylabel("sideway (y)")

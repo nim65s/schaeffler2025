@@ -1,0 +1,29 @@
+times = [0]
+right_refs = [right0.copy()]
+left_refs = [left0.copy()]
+cop_refs = [np.mean([right0, left0], 0)]
+for phase in phases:
+    times.extend([times[-1] + t for t in np.arange(DT, phase.duration + DT, DT)])
+    delta = phase.delta / phase.duration
+    right_refs.extend(
+        [
+            right_refs[-1] + (delta * t if phase.support == "left" else 0)
+            for t in np.arange(DT, phase.duration + DT, DT)
+        ]
+    )
+    left_refs.extend(
+        [
+            left_refs[-1] + (delta * t if phase.support == "right" else 0)
+            for t in np.arange(DT, phase.duration + DT, DT)
+        ]
+    )
+    cop_refs.extend(
+        [
+            right_refs[-1]
+            if phase.support == "right"
+            else left_refs[-1]
+            if phase.support == "left"
+            else np.mean([right_refs[-1], left_refs[-1]], 0)
+            for t in np.arange(0, phase.duration, DT)
+        ]
+    )

@@ -1,0 +1,18 @@
+# Structure to define a phase of locomotion
+Phase = namedtuple("Phase", ["duration", "delta", "support"])
+
+# Definition of the task
+comVelocity = np.array([0.25, 0, 0])
+stepDuration = 0.8
+step = comVelocity[:2] * stepDuration * 2
+phases = [
+    Phase(stepDuration * 2, np.zeros(2), "double"),
+    Phase(stepDuration / 2, step / 2, "right"),
+    Phase(stepDuration, step, "left"),
+    Phase(stepDuration, step, "right"),
+    Phase(stepDuration, step, "left"),
+    Phase(stepDuration, step, "right"),
+    Phase(stepDuration / 2, step / 2, "left"),
+    Phase(stepDuration * 2, np.zeros(2), "double"),
+]
+DT = 6e-2

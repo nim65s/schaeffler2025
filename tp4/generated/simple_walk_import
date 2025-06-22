@@ -1,0 +1,30 @@
+import time
+import unittest
+from collections import namedtuple
+
+import example_robot_data as robex
+import matplotlib.pyplot as plt
+import numpy as np
+import pinocchio as pin
+import proxsuite
+from numpy.linalg import pinv
+
+from schaeffler2025.meshcat_viewer_wrapper import MeshcatVisualizer
+
+np.set_printoptions(precision=3, linewidth=350, suppress=True, threshold=1e6)
+
+# --- Load robot model
+robot = robex.load("talos")
+model = robot.model
+data = model.createData()
+NQ = model.nq
+NV = model.nv
+
+# Open the viewer
+viz = MeshcatVisualizer(robot)
+viz.display(robot.q0)
+
+feetIndexes = {
+    "right": robot.model.getFrameId("right_sole_link"),
+    "left": robot.model.getFrameId("left_sole_link"),
+}
