@@ -1,0 +1,12 @@
+import time
+import unittest
+
+import example_robot_data as robex
+import numpy as np
+import pinocchio as pin
+
+from schaeffler2025.meshcat_viewer_wrapper import MeshcatVisualizer, colors
+
+robot = robex.load("talos")
+NQ = robot.model.nq
+NV = robot.model.nv

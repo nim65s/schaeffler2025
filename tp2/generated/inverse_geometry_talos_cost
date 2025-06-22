@@ -1,0 +1,13 @@
+def cost(q):
+    """
+    Compute score from a configuration: sum of the 4 reaching
+    tasks, one for each leg.
+    """
+    q[3:7] = q[3:7] / norm(q[3:7])
+    cost = 0.0
+    pin.framesForwardKinematics(robot.model,robot.data,q)
+    for i in range(4):
+        p_i = robot.data.oMf[robot.feetIndexes[i]].translation
+        cost += norm(p_i - targets[i]) ** 2
+    cost += (norm(q[3:7]) ** 2 - 1) ** 2
+    return cost

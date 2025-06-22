@@ -1,0 +1,9 @@
+robot.feetIndexes = [
+    robot.model.getFrameId(frameName)
+    for frameName in [
+        "gripper_right_fingertip_3_link",
+        "gripper_left_fingertip_3_link",
+        "right_sole_link",
+        "left_sole_link",
+    ]
+]

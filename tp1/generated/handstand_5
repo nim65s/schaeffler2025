@@ -1,0 +1,19 @@
+# Choose the reference posture of the robot
+q0 = robot.q0.copy()
+q0[20:22] = [-0.5, 0.2]
+q0[29:35] = [0.3, -1.5, -0.7, -1.6, -1.2, -0.8]
+
+delta = np.random.rand(robot.model.nq - 7) * 0.2 - 0.1
+for t in range(50):
+    q = q0.copy()
+    q[7:] = q0[7:] + np.sin(3.14 * t / 100.0) * delta
+
+    pin.framesForwardKinematics(robot.model, robot.data, q)
+    oMbasis = robot.data.oMf[1]
+    oMeff = robot.data.oMf[idx]
+    effMbasis = oMeff.inverse() * oMbasis
+
+    q[:3] = effMbasis.translation
+    q[3:7] = pin.Quaternion(effMbasis.rotation).coeffs()
+    viz.display(q)
+    time.sleep(0.01)

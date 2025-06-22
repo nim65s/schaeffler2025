@@ -1,0 +1,17 @@
+def callback(q):
+    """
+    Diplay the robot, postion a ball of different color for
+    each foot, and the same ball of same color for the location
+    of the corresponding target.
+    """
+    q[3:7] = q[3:7] / norm(q[3:7])
+    pin.framesForwardKinematics(robot.model,robot.data,q)
+    for i in range(4):
+        p_i = robot.data.oMf[robot.feetIndexes[i]]
+        viz.applyConfiguration("world/%s" % colors[i], p_i)
+        viz.applyConfiguration(
+            "world/%s_des" % colors[i], list(targets[i]) + [1, 0, 0, 0]
+        )
+
+    viz.display(q)
+    time.sleep(1e-2)

@@ -1,0 +1,29 @@
+q = robot.q0.copy()
+for phase in phases:
+    for t in np.arange(0, phase.duration, DT):
+        # Pre-compute kinematics, jacobians, com etc
+        pin.computeAllTerms(model, data, q, np.zeros(NV))
+
+        # Right foot
+        edot_right = (
+            phase.delta / phase.duration if phase.support != "right" else np.zeros(2)
+        )
+        edot_right = np.r_[edot_right, [0, 0, 0, 0]]  # Make it 6D
+        J_right = pin.getFrameJacobian(model, data, feetIndexes["right"], pin.LOCAL)
+        # Left foot
+        edot_left = (
+            phase.delta / phase.duration if phase.support != "left" else np.zeros(2)
+        )
+        J_left = pin.getFrameJacobian(model, data, feetIndexes["left"], pin.LOCAL)
+        edot_left = np.r_[edot_left, [0, 0, 0, 0]]  # Make it 6D
+        # COM
+        edot_com = comVelocity
+        J_com = pin.jacobianCenterOfMass(model, data, q)
+
+        edot = np.r_[edot_right, edot_left, edot_com]
+        J = np.r_[J_right, J_left, J_com]
+
+        vq = pinv(J) @ edot
+        q = pin.integrate(model, q, vq * DT)
+        viz.display(q)
+        time.sleep(DT)

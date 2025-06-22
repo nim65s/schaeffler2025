@@ -1,0 +1,22 @@
+idx = robot.model.getFrameId("gripper_right_fingertip_3_link")
+pin.framesForwardKinematics(robot.model, robot.data, q0)
+# Position of end-eff wrt world at current configuration
+o_eff = robot.data.oMf[idx].translation
+o_ball = q_ball[:3]  # Position of ball wrt world
+eff_ball = o_ball - o_eff  # Position of ball wrt eff
+
+delta = np.random.rand(robot.model.nq - 7) * 0.2 - 0.1
+delta[:12] = 0  # Do not move the legs
+for t in range(50):
+    # Chose new configuration of the robot
+    q = q0.copy()
+    q[7:] = q0[7:] + np.sin(3.14 * t / 100.0) * delta
+
+    # Gets the new position of the ball
+    pin.framesForwardKinematics(robot.model, robot.data, q)
+    o_ball = robot.data.oMf[idx] * eff_ball
+
+    # Display new configuration for robot and ball
+    viz.applyConfiguration(ballID, o_ball.tolist() + [1, 0, 0, 0])
+    viz.display(q)
+    time.sleep(1e-2)

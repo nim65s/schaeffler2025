@@ -9,7 +9,7 @@ is done with the placement of the end effector, to which a purple brick is
 attached.
 """
 
-import math
+# %jupyter_snippet 1
 import time
 import unittest
 
@@ -19,11 +19,10 @@ import pinocchio as pin
 
 from schaeffler2025.meshcat_viewer_wrapper import MeshcatVisualizer, colors
 
-# %jupyter_snippet 1
 robot = robex.load("talos")
-# %end_jupyter_snippet
 NQ = robot.model.nq
 NV = robot.model.nv
+# %end_jupyter_snippet
 
 # Open the viewer
 viz = MeshcatVisualizer(robot)
@@ -49,7 +48,7 @@ viz.applyConfiguration(ballID, q_ball)
 # Configuration for picking the box
 # %jupyter_snippet 3
 q0 = robot.q0.copy()
-q0[29:36] = [.9, -0.1, 3.2, 1.7, 0, 0.3, 0.1 ]
+q0[29:36] = [0.9, -0.1, 3.2, 1.7, 0, 0.3, 0.1]
 viz.display(q0)
 # %end_jupyter_snippet
 print("The robot is display with end effector on the red ball.")
@@ -67,21 +66,21 @@ print("Let's start the movement ...")
 # %jupyter_snippet 4
 
 idx = robot.model.getFrameId("gripper_right_fingertip_3_link")
-pin.framesForwardKinematics(robot.model,robot.data,q0)
+pin.framesForwardKinematics(robot.model, robot.data, q0)
 # Position of end-eff wrt world at current configuration
 o_eff = robot.data.oMf[idx].translation
 o_ball = q_ball[:3]  # Position of ball wrt world
 eff_ball = o_ball - o_eff  # Position of ball wrt eff
 
-delta = np.random.rand(robot.model.nq-7)*.2 - .1
-delta[:12] = 0 # Do not move the legs
+delta = np.random.rand(robot.model.nq - 7) * 0.2 - 0.1
+delta[:12] = 0  # Do not move the legs
 for t in range(50):
     # Chose new configuration of the robot
     q = q0.copy()
-    q[7:] = q0[7:] + np.sin(3.14*t/100.0)*delta
+    q[7:] = q0[7:] + np.sin(3.14 * t / 100.0) * delta
 
     # Gets the new position of the ball
-    pin.framesForwardKinematics(robot.model,robot.data,q)
+    pin.framesForwardKinematics(robot.model, robot.data, q)
     o_ball = robot.data.oMf[idx] * eff_ball
 
     # Display new configuration for robot and ball
@@ -97,39 +96,35 @@ for t in range(50):
 # a non-spherical object, hence displaying a rigid 6d constraint when
 # the robot moves.
 
+# %jupyter_snippet 5
 # Choose the reference posture of the robot
 q0 = robot.q0.copy()
-q0[20:22] = [-.5,0.2]
-q0[29:35] = [ .3, -1.5, -0.7, -1.6, -1.2, -0.8 ]
+q0[20:22] = [-0.5, 0.2]
+q0[29:35] = [0.3, -1.5, -0.7, -1.6, -1.2, -0.8]
 
-delta = np.random.rand(robot.model.nq-7)*.2 - .1
+delta = np.random.rand(robot.model.nq - 7) * 0.2 - 0.1
 for t in range(50):
     q = q0.copy()
-    q[7:] = q0[7:] + np.sin(3.14*t/100.0)*delta
+    q[7:] = q0[7:] + np.sin(3.14 * t / 100.0) * delta
 
-    pin.framesForwardKinematics(robot.model,robot.data,q)
+    pin.framesForwardKinematics(robot.model, robot.data, q)
     oMbasis = robot.data.oMf[1]
     oMeff = robot.data.oMf[idx]
-    effMbasis = oMeff.inverse()*oMbasis
+    effMbasis = oMeff.inverse() * oMbasis
 
     q[:3] = effMbasis.translation
     q[3:7] = pin.Quaternion(effMbasis.rotation).coeffs()
     viz.display(q)
-    time.sleep(.01)
+    time.sleep(0.01)
+# %end_jupyter_snippet
 
 
 ### TEST ZONE ############################################################
 ### This last part is to automatically validate the versions of this example.
 class SimplePickAndPlaceTest(unittest.TestCase):
     def test_hand_placement(self):
-        pin.framesForwardKinematics(robot.model,robot.data,q)
-        self.assertTrue(
-            (
-                np.abs(
-                    pin.log(robot.data.oMf[idx]).vector)
-                < 1e-5
-            ).all()
-        )
+        pin.framesForwardKinematics(robot.model, robot.data, q)
+        self.assertTrue((np.abs(pin.log(robot.data.oMf[idx]).vector) < 1e-5).all())
 
 
 SimplePickAndPlaceTest().test_hand_placement()
