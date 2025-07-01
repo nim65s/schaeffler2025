@@ -21,7 +21,7 @@ import mim_solvers
 import numpy as np
 import pinocchio as pin
 
-from supaero2025.meshcat_viewer_wrapper import MeshcatVisualizer
+from schaeffler2025.meshcat_viewer_wrapper import MeshcatVisualizer
 
 # First, let's load the Pinocchio model for the Panda arm.
 robot = robex.load("panda")
@@ -196,10 +196,12 @@ solver.eps_rel = 0.0  # QP termination absolute criteria
 solver.use_filter_line_search = True  # True by def, False = use merit function
 # %end_jupyter_snippet
 
-# %jupyter_snippet solve_and_plot
+# %jupyter_snippet solve
 # Solving it with the DDP algorithm
 solver.solve([], [], 1000)  # xs_init,us_init,maxiter
+# %end_jupyter_snippet
 
+# %jupyter_snippet plot_after_solve
 ees = [
     d.differential.pinocchio.oMf[FRAME_TIP].translation
     for d in solver.problem.runningDatas

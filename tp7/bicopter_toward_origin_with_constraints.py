@@ -2,7 +2,7 @@ import crocoddyl
 import mim_solvers
 import numpy as np
 
-from tp5.bicopter_utils import ViewerBicopter, plotBicopterSolution
+from tp7.bicopter_utils import ViewerBicopter, plotBicopterSolution
 
 ### HYPER PARAMS: horizon and initial state
 timeStep = 0.01

@@ -3,7 +3,7 @@ import unittest
 import crocoddyl
 import numpy as np
 
-from tp5.bicopter_utils import ViewerBicopter, plotBicopterSolution
+from tp7.bicopter_utils import ViewerBicopter, plotBicopterSolution
 
 # %jupyter_snippet hyperparams
 ### HYPER PARAMS: horizon and initial state

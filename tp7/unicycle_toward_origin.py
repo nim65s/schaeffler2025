@@ -3,7 +3,7 @@ import unittest
 import crocoddyl
 import numpy as np
 
-from tp5.unicycle_utils import plotUnicycleSolution
+from tp7.unicycle_utils import plotUnicycleSolution
 
 # %jupyter_snippet hyperparams
 ### HYPER PARAMS: horizon and initial state

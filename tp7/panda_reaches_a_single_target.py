@@ -20,7 +20,7 @@ import example_robot_data as robex
 import numpy as np
 import pinocchio as pin
 
-from supaero2025.meshcat_viewer_wrapper import MeshcatVisualizer
+from schaeffler2025.meshcat_viewer_wrapper import MeshcatVisualizer
 
 # %end_jupyter_snippet
 
