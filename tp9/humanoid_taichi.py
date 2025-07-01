@@ -56,7 +56,7 @@ in_world_M_hand_target = pinocchio.SE3(np.eye(3), np.array([0.4, 0, 1.2]))
 # %jupyter_snippet init_display
 # ### DISPLAY
 # Initialize viewer
-from wan2024.meshcat_viewer_wrapper import MeshcatVisualizer
+from schaeffler2025.meshcat_viewer_wrapper import MeshcatVisualizer
 viz = MeshcatVisualizer(robot)
 viz.display(robot.q0)
 # %end_jupyter_snippet
