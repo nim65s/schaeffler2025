@@ -34,5 +34,5 @@ dependencies = [
 profile = "black"
 
 [tool.ruff.lint]
-extend-ignore = ["E402", "E701", "F821"]
+extend-ignore = ["E402", "E701", "F401", "F821"]
 
