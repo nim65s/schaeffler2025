@@ -87,6 +87,7 @@ for phase in phases:
         time.sleep(DT)
 # %end_jupyter_snippet
 
+
 ### TEST ZONE ############################################################
 ### This last part is to automatically validate the versions of this example.
 class FloatingTest(unittest.TestCase):

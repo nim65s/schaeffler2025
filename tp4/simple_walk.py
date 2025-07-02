@@ -127,14 +127,14 @@ plt.plot(times, [r[0] for r in right_refs])
 plt.plot(times, [r[0] for r in left_refs])
 plt.plot(times, [r[0] for r in cop_refs])
 plt.legend(["right", "left", "cop"])
-plt.ylabel('Forward (x)')
+plt.ylabel("Forward (x)")
 plt.subplot(212)
 plt.plot(times, [r[1] for r in right_refs])
 plt.plot(times, [r[1] for r in left_refs])
 plt.plot(times, [r[1] for r in cop_refs])
 plt.legend(["right", "left", "cop"])
-plt.xlabel('Time')
-plt.ylabel('Sideway (y)')
+plt.xlabel("Time")
+plt.ylabel("Sideway (y)")
 # %end_jupyter_snippet
 
 # ### OCP ###
@@ -279,6 +279,7 @@ for k, t in enumerate(times):
     time.sleep(DT)
 # %end_jupyter_snippet
 
+
 ### TEST ZONE ############################################################
 ### This last part is to automatically validate the versions of this example.
 class FloatingTest(unittest.TestCase):
@@ -286,5 +287,6 @@ class FloatingTest(unittest.TestCase):
         com_T = data.com[0][:2]
         comref_T = [qp[0].results.x[-3], qp[1].results.x[-3]]
         self.assertTrue(np.allclose(com_T, comref_T, atol=1e-3))
+
 
 FloatingTest().test_finish()
