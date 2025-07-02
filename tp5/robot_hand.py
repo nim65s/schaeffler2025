@@ -12,7 +12,7 @@ def Capsule(name, joint, radius, length, placement, color=[0.7, 0.7, 0.98, 1]):
     ### They should be capsules ... but hppfcl current version is buggy with Capsules...
     # hppgeom = hppfcl.Capsule(radius,length)
     hppgeom = hppfcl.Cylinder(radius, length)
-    geom = pin.GeometryObject(name, joint, joint, placement, hppgeom)
+    geom = pin.GeometryObject(name, joint, joint, hppgeom, placement)
     geom.meshColor = np.array(color)
     return geom
 
@@ -20,7 +20,7 @@ def Capsule(name, joint, radius, length, placement, color=[0.7, 0.7, 0.98, 1]):
 def Sphere(name, joint, radius, placement, color=[0.9, 0.9, 0.98, 1]):
     """Create a Pinocchio::FCL::Capsule to be added in the Geom-Model."""
     hppgeom = hppfcl.Sphere(radius)
-    geom = pin.GeometryObject(name, joint, joint, placement, hppgeom)
+    geom = pin.GeometryObject(name, joint, joint, hppgeom, placement)
     geom.meshColor = np.array(color)
     return geom
 
