@@ -11,6 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from stable_baselines3.common.buffers import ReplayBuffer
 import matplotlib.pylab as plt
+import unittest
 
 # HYPERPARAM
 SEED = 1
@@ -84,6 +85,7 @@ rb = ReplayBuffer(
 
 # start the game
 obs, _ = envs.reset(seed=SEED)
+started = np.zeros(envs.num_envs, dtype=bool)
 h_rwd = []
 
 for global_step in range(TOTAL_TIMESTEPS):
@@ -99,18 +101,21 @@ for global_step in range(TOTAL_TIMESTEPS):
     next_obs, rewards, terminations, truncations, infos = envs.step(actions)
 
     # record rewards for plotting purposes
-    if "final_info" in infos:
-        for info in infos["final_info"]:
-            if info and "episode" in info:
-                print(f"global_step={global_step}, episodic_return={info['episode']['r']}")
-                h_rwd.append(info['episode']['r'])
+    if "episode" in infos:
+        for idx in range(NUM_ENVS):
+            if truncations[idx] or terminations[idx]:
+                assert infos["episode"]["l"]>0
+                h_rwd.append(infos["episode"]["r"][idx])
+                if len(h_rwd) % 100 == 0:  # verbose one every ~200 episode
+                    print(f"global_step={global_step}/{TOTAL_TIMESTEPS},"
+                          + f" episodic_return={h_rwd[-1]}")
 
-    # save data to reply buffer; handle `final_observation`
-    real_next_obs = next_obs.copy()
-    for idx, trunc in enumerate(truncations):
-        if trunc:
-            real_next_obs[idx] = infos["final_observation"][idx]
-    rb.add(obs, real_next_obs, actions, rewards, terminations, infos)
+    # Add samples to replay buffer if env not starting
+    if np.any(started):
+        rb.add(obs[started], next_obs[started], actions[started],
+                rewards[started], terminations[started], infos)
+    obs = next_obs
+    started = np.logical_not(np.logical_or(terminations, truncations))
 
     # CRUCIAL step easy to overlook
     obs = next_obs
@@ -124,7 +129,7 @@ for global_step in range(TOTAL_TIMESTEPS):
         old_val = q_network(data.observations).gather(1, data.actions).squeeze()
         loss = F.mse_loss(td_target, old_val)
 
-        if global_step % 100 == 0:
+        if int(round((global_step/100) ** (1/3))) ** 3 ==  global_step/100:
             print(f'*** Learning goes ... loss = {loss},  q = {old_val.mean()}')
 
         # optimize the model
@@ -142,8 +147,6 @@ for global_step in range(TOTAL_TIMESTEPS):
 envs.close()
 
 # ### DISPLAY RESULTS
-plt.ion()
-
 # ### Plot the learning curve
 print(f"Total rate of success: {np.mean(h_rwd)}")
 plt.plot(np.cumsum(h_rwd) / range(1, len(h_rwd)+1))
@@ -184,4 +187,10 @@ plt.ylabel('Pole Angle')
 plt.title('Q-value landscape (velocity = 0)')
 print('Type plt.show() to display the result')
 
+### TEST ZONE ############################################################
+### This last part is to automatically validate the versions of this example.
+class MyTest(unittest.TestCase):
+    def test_conv(self):
+        self.assertGreater(np.average(h_rwd[-20:]), -15)
 
+MyTest().test_conv()

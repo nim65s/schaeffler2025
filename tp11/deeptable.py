@@ -10,6 +10,7 @@ from myenvs import EnvMountainCarFullyDiscrete
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import unittest
 
 ### --- Random seed
 RANDOM_SEED = 1188  # int((time.time()%10)*1000)
@@ -121,7 +122,7 @@ for episode in range(1, NEPISODES):
 
     h_rwd.append(rsum)
     if not episode % 20:
-        print("Episode #%d done with %d sucess" % (episode, sum(h_rwd[-20:])))
+        print(f"Episode #{episode} done, average return on the previsous 20 = {np.average(h_rwd[-20:])}")
 
 ### DISPLAY
 
@@ -148,3 +149,11 @@ plt.plot(np.cumsum(h_rwd) / range(1, len(h_rwd)+1))
 # ### Plot Q-Table as value function pos-vs-vel
 qvalue.plot()
 print('Type plt.show() to display the result')
+
+### TEST ZONE ############################################################
+### This last part is to automatically validate the versions of this example.
+class MyTest(unittest.TestCase):
+    def test_conv(self):
+        self.assertGreater(np.average(h_rwd[-20:]), -15)
+
+MyTest().test_conv()

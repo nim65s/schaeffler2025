@@ -8,6 +8,7 @@ import gymnasium as gym
 import matplotlib.pyplot as plt
 import numpy as np
 from myenvs import EnvMountainCarFullyDiscrete
+import unittest
 
 ### --- Random seed
 RANDOM_SEED = 1188  # int((time.time()%10)*1000)
@@ -19,7 +20,7 @@ np.random.seed(RANDOM_SEED)
 env = EnvMountainCarFullyDiscrete()
 
 ### --- Hyper paramaters
-NEPISODES = 400000  # Number of training episodes
+NEPISODES = 1500  # Number of training episodes
 NSTEPS = 50  # Max episode length
 LEARNING_RATE = 0.85  #
 DECAY_RATE = 0.99  # Discount factor
@@ -49,9 +50,7 @@ for episode in range(1, NEPISODES):
 
     h_rwd.append(rsum)
     if not episode % 20:
-        print(
-            "Episode #%d done with average cost %.2f" % (episode, sum(h_rwd[-20:]) / 20)
-        )
+        print(f"Episode #{episode} done, average return on the previsous 20 = {np.average(h_rwd[-20:])}")
 
 ### DISPLAY
 
@@ -63,9 +62,9 @@ def rendertrial(env,maxiter=100):
     traj = [s]
     for i in range(maxiter):
         a = np.argmax(Q[s, :])
-        s, r, done, _ = env.step(a)
+        s, r, done, term, info = env.step(a)
         traj.append(s)
-        if done: break
+        if done or term: break
     return traj
 
 envrender = EnvMountainCarFullyDiscrete(render_mode = 'human')
@@ -90,8 +89,15 @@ policies = [ np.argmax(Q[s,:]) for s in range(env.observation_space.n)
            if env.is_index_in_range(s) ]
 axs[1].scatter([qv[0] for qv in qvs],[qv[1] for qv in qvs],c=policies)
 
-
 qv_traj = indexes_to_continuous_states(traj)
 plt.plot([qv[0] for qv in qv_traj],[qv[1] for qv in qv_traj],'-')
 print('Type plt.show() to display the result')
+
+### TEST ZONE ############################################################
+### This last part is to automatically validate the versions of this example.
+class MyTest(unittest.TestCase):
+    def test_conv(self):
+        self.assertGreater(np.average(h_rwd[-20:]), -15)
+
+MyTest().test_conv()
 
