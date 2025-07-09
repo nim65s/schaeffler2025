@@ -50,7 +50,7 @@ aq = np.linalg.inv(M) @ (tauq - b)
 # %end_jupyter_snippet
 # Alternatively, call the ABA algorithm
 aq_bis = pin.aba(model, data, q, vq, tauq)
-print(f"Sanity check, should be 0 ... {np.linalg.norm(aq-aq_bis)}")
+print(f"Sanity check, should be 0 ... {np.linalg.norm(aq - aq_bis)}")
 assert np.allclose(aq, aq_bis)
 
 ### Example to integrate an acceleration.

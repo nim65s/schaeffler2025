@@ -92,7 +92,7 @@ def _meshcat_hideColPatches(
             adr = visualizer.getViewerNodeName(g, pin.VISUAL)
             visualizer.viewer[adr].set_property("visible", vis)
             if verbose:
-                print(f"Make {ig//2} ({adr}) visible : {vis}")
+                print(f"Make {ig // 2} ({adr}) visible : {vis}")
     else:
         for g in visual_model.geometryObjects:
             if colpatchKey in g.name:

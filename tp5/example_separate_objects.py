@@ -8,7 +8,6 @@ The convergence of the distances of each collision pair with negative
 (colliding) distances is finally plot.
 """
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pinocchio as pin
@@ -60,7 +59,7 @@ NB_ITER = 100
 USE_DISTANCE = True
 # %end_jupyter_snippet
 # With P2X, only USE_DISTANCE=True is reasonible
-assert USE_DISTANCE # or P3X
+assert USE_DISTANCE  # or P3X
 
 # %jupyter_snippet loop
 # Set minimal distance to be EPSILON

@@ -73,13 +73,16 @@ def cost(q):
     """
     q[3:7] = q[3:7] / norm(q[3:7])
     cost = 0.0
-    pin.framesForwardKinematics(robot.model,robot.data,q)
+    pin.framesForwardKinematics(robot.model, robot.data, q)
     for i in range(4):
         p_i = robot.data.oMf[robot.feetIndexes[i]].translation
         cost += norm(p_i - targets[i]) ** 2
     cost += (norm(q[3:7]) ** 2 - 1) ** 2
     return cost
+
+
 # %end_jupyter_snippet
+
 
 # %jupyter_snippet callback
 def callback(q):
@@ -89,7 +92,7 @@ def callback(q):
     of the corresponding target.
     """
     q[3:7] = q[3:7] / norm(q[3:7])
-    pin.framesForwardKinematics(robot.model,robot.data,q)
+    pin.framesForwardKinematics(robot.model, robot.data, q)
     for i in range(4):
         p_i = robot.data.oMf[robot.feetIndexes[i]]
         viz.applyConfiguration("world/%s" % colors[i], p_i)
@@ -99,6 +102,8 @@ def callback(q):
 
     viz.display(q)
     time.sleep(1e-2)
+
+
 # %end_jupyter_snippet
 
 # %jupyter_snippet optim
